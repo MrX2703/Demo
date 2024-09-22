@@ -1,98 +1,27 @@
-
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel Result Viewer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            text-align: center;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #333;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-    </style>
+    <title>Student Results</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Upload Excel File to View Results</h1>
-        <input type="file" id="fileInput" />
-        <table id="resultTable">
+        <h1>Student Results Search & Download</h1>
+        <input type="file" id="fileInput" accept=".xlsx, .xls">
+        <input type="text" id="searchInput" placeholder="Search by PRN, Student Name, or Subject">
+        <button id="downloadButton" disabled>Download Filtered Results</button>
+        <table id="resultsTable">
             <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Subject</th>
-                    <th>Marks</th>
-                </tr>
+                <tr id="tableHeader"></tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        document.getElementById('fileInput').addEventListener('change', handleFile, false);
-
-        function handleFile(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function(event) {
-                const data = new Uint8Array(event.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
-
-                // Assuming the first sheet is the one we're interested in
-                const firstSheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON
-                const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-                // Display the data in the table
-                displayData(jsonData);
-            };
-
-            reader.readAsArrayBuffer(file);
-        }
-
-        function displayData(data) {
-            const tableBody = document.getElementById('tableBody');
-            tableBody.innerHTML = ''; // Clear any previous data
-
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                const studentCell = document.createElement('td');
-                const subjectCell = document.createElement('td');
-                const marksCell = document.createElement('td');
-
-                studentCell.textContent = row['Student'];
-                subjectCell.textContent = row['Subject'];
-                marksCell.textContent = row['Marks'];
-
-                tr.appendChild(studentCell);
-                tr.appendChild(subjectCell);
-                tr.appendChild(marksCell);
-                tableBody.appendChild(tr);
-            });
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
